@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { TableColumn } from '../types';
 import type { CellEditApi } from '../hooks/useCellEdit';
+import useIsomorphicLayoutEffect from '../hooks/useIsomorphicLayoutEffect';
 
 interface CellEditorProps<T> {
 	edit: CellEditApi<T>;
@@ -31,6 +32,14 @@ function CellEditor<T>({ edit, row, column, labelledBy, cellNavigation }: CellEd
 		handleInputKeyDown,
 		handleCheckboxCommit,
 	} = edit;
+
+	useIsomorphicLayoutEffect(() => {
+		const el = inputRef.current;
+		if (editing && el instanceof HTMLTextAreaElement) {
+			el.style.height = 'auto';
+			el.style.height = `${el.scrollHeight}px`;
+		}
+	}, [editing, editValue, inputRef]);
 
 	return (
 		<>

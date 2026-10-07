@@ -942,7 +942,9 @@
 .rdt_editTextarea {
 	padding-top: 12px;
 	padding-bottom: 12px;
-	resize: vertical;
+	resize: none;
+	max-height: var(--rdt-cell-edit-textarea-max-height, 240px);
+	overflow-y: auto;
 	font-family: inherit;
 	line-height: inherit;
 }

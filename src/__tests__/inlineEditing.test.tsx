@@ -467,4 +467,41 @@ describe('inline editing: textarea editor', () => {
 		expect(textarea).toHaveAttribute('aria-invalid', 'true');
 		expect(onCellEdit).not.toHaveBeenCalled();
 	});
+
+	test('places caret at the end of text when opened', async () => {
+		const columns: TableColumn<Row>[] = [
+			{
+				id: 'name',
+				name: 'Name',
+				selector: r => r.name,
+				editor: { type: 'textarea' },
+			},
+		];
+
+		const { getByText } = render(<DataTable columns={columns} data={rows} />);
+		clickCell(getByText, 'Alice');
+
+		const textarea = (await screen.findByDisplayValue('Alice')) as HTMLTextAreaElement;
+		expect(textarea.selectionStart).toBe('Alice'.length);
+		expect(textarea.selectionEnd).toBe('Alice'.length);
+	});
+
+	test('auto-grows height on content change', async () => {
+		const columns: TableColumn<Row>[] = [
+			{
+				id: 'name',
+				name: 'Name',
+				selector: r => r.name,
+				editor: { type: 'textarea' },
+			},
+		];
+
+		const { getByText } = render(<DataTable columns={columns} data={rows} />);
+		clickCell(getByText, 'Alice');
+
+		const textarea = (await screen.findByDisplayValue('Alice')) as HTMLTextAreaElement;
+		expect(textarea.style.height).toBeDefined();
+		fireEvent.change(textarea, { target: { value: 'Alice\nLine 2\nLine 3\nLine 4' } });
+		expect(textarea.style.height).toBeDefined();
+	});
 });
